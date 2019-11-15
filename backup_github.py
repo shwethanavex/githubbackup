@@ -14,7 +14,7 @@ github_encrypted_token = ''
 bucket_name = 'navexgitbackup'
 
 # Trivia
-timestring = datetime.now().strftime('%Y%m%d-%H%M')
+timestring = datetime.now().strftime('%Y%m%d')
 
 def get_github_key_from_secrets_manager():
     secret_name = "sk-navex-github-backup"
