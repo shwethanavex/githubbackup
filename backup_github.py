@@ -49,7 +49,7 @@ def backup_github(gh,github_token):
 
         # Mirror Clone
         #from_url = "git@github.com:" + r + ".git"
-        from_url = "https://" + github_token + ":x-oauth-basic@github.com/" + r + ".git"
+        from_url = "https://" + github_token + "github.com/tnwinc" + r + ".git"
         dst_path = r + "-" + timestring + ".git"
         Repo.clone_from(from_url, dst_path, mirror=True)
 
