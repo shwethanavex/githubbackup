@@ -8,7 +8,7 @@ from git import Repo
 # Github Details
 organisation = 'Navex Global'
 # This is, a github access token with appropriatly minimal permissions, that has been encrypted against our specific AWS KMS ARN.  It's therefore safe to make public
-github_encrypted_token = ''
+github_token = ''
 
 # AWS Details
 bucket_name = 'navexgitbackup'
