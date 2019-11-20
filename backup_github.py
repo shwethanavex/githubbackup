@@ -6,22 +6,15 @@ from datetime import datetime
 from git import Repo
 
 # Github Details
-organisation = 'Navex Global'
+organisation = 'tnwinc'
 # This is, a github access token with appropriatly minimal permissions, that has been encrypted against our specific AWS KMS ARN.  It's therefore safe to make public
-github_token = ''
+github_encrypted_token = 'f2eaefb860a3774bd236766e9c90e5f20275bf17'
 
 # AWS Details
 bucket_name = 'navexgitbackup'
 
 # Trivia
-timestring = datetime.now().strftime('%Y%m%d')
-
-def get_github_key_from_secrets_manager():
-    secret_name = "sk-navex-github-backup"
-
-    client = boto3.client(service_name='secretsmanager')
-    get_secret_value_response = client.get_secret_value(  SecretId=secret_name  )
-    return get_secret_value_response['SecretString']
+timestring = datetime.now().strftime('%Y%m%d-%H%M')
 
 
 def decrypt_token(token):
@@ -45,15 +38,15 @@ def backup_github(gh,github_token):
     for repo in repos:
 
         r = str(repo)
-        print "Archiving: " + r
+        print ("Archiving: " + r)
 
         # Mirror Clone
         #from_url = "git@github.com:" + r + ".git"
-        from_url = "https://" + github_token + "github.com/tnwinc" + r + ".git"
+        from_url = "https://" + github_token + ":/tnwinc/" + r + ".git"
         dst_path = r + "-" + timestring + ".git"
         Repo.clone_from(from_url, dst_path, mirror=True)
-
-        # Archive to file
+		
+		# Archive to file
         tar_filename = os.path.basename(r) + "-" + timestring + ".tar.gz"
         tar = tarfile.open(tar_filename, "w:gz")
         tar.add(dst_path)
@@ -68,8 +61,7 @@ def backup_github(gh,github_token):
         os.remove(tar_filename)
 
 def handler(event, context):
-    git_encrypted_key = get_github_key_from_secrets_manager()
-    github_token = decrypt_token(git_encrypted_key)
+    github_token = decrypt_token(github_encrypted_token)
     gh = get_github3_client(github_token)
     backup_github(gh)
 
@@ -77,10 +69,9 @@ def handler(event, context):
 def main():
     #boto3.setup_default_session(profile_name='cognito')
     boto3.setup_default_session(region_name='us-west-2')
-    git_encrypted_key = get_github_key_from_secrets_manager()
-    github_token = decrypt_token(git_encrypted_key)
-    gh = get_github3_client(github_token)
-    backup_github(gh,github_token)
+    #github_token = decrypt_token(github_encrypted_token)
+    #gh = get_github3_client(github_token)
+    #backup_github(gh,github_token)
 
 if __name__ == "__main__":
     main()
