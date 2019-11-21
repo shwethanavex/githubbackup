@@ -31,7 +31,7 @@ def get_github3_client(token):
 
 def backup_github(gh,github_token):
     org = gh.organization(organisation)
-    repos = list(org.iter_repos(type="All"))  # Or type="private"
+    repos = list(org.iter_repos(Type="All"))  # Or type="private"
 
     s3 = boto3.resource('s3')
 
